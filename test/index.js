@@ -2,22 +2,20 @@ const {
     downloadCollections
 } = require('../service');
 const exec = require('child_process').execSync;
-let failedCount = 0;
 
 const runTest = ({collectionList, env, pipelineName}) => {
 	
     for (let collectionName of collectionList) {
     	try{
     		let newmanCommand = `newman run files/collections/${collectionName}.json -e files/environments/${env}.json -r html,cli --reporter-html-export report-${collectionName}.html`;
-	        exec(newmanCommand, {
+	        const result = exec(newmanCommand, {
 	            cwd: process.cwd(),
 	            stdio: 'inherit',
 	            env: process.env
 	        });
+	        console.log('=====================', result);
     	}catch(e) {
-    		failedCount++;
-    		console.log('runTest', failedCount);
-    		throw e;
+    		console.log(e);
     	}finally {
     		saveToS3(collectionName, pipelineName);
     	}
@@ -39,12 +37,11 @@ const saveToS3 = (collectionName, pipelineName) => {
 };
 const test = async () => {
     const postmanConfig = await downloadCollections();
-    runTest(postmanConfig);	
-
-    console.log('test', failedCount);
-    if(failedCount > 0) {
+    if(!postmanConfig) {
+    	console.log('download collection failed');
     	exec('exit 1');
-    }			
+    }
+    runTest(postmanConfig);				
 };
 
 exports.test = test;
