@@ -11,6 +11,7 @@ const PATHENV = config.path.environments; //Postman environments folder
 const APIURL = config.api_url;
 
 const download = (path, filename, json) => {
+  console.log(`downloaded collection ${filename}`);
   fs.ensureDirSync(path);
   fs.writeFileSync(path + '/' + filename, json, 'utf8');
 };
@@ -62,15 +63,17 @@ const getLoginToken = async () => {
           appid: '123'
         });
 
-   const {data} = JSON.parse(result.text);
-   return data;
+   return JSON.parse(result.text).data;
        
 };
 
 const downloadCollections = async () => {
   try {
     await getCollections();
+    console.log('download collections completed');
     await getEnviroments();
+    console.log('download environments completed');
+    console.log('download completed');
   }catch(e) {
     console.log(e);
   }
