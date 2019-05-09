@@ -24,12 +24,10 @@ const recordS3 = () => {
 };
 
 const test = async () => {
-	try{
+	try {
 		await downloadCollections();
 		runTest();
-	}catch(e) {
-		throw new Error(e);
-	}finally {
+	} finally {
 		recordS3();
 	}
 	
