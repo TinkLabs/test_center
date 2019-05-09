@@ -17,5 +17,5 @@ phases:
 
 artifacts:
   files:
-    - `*/report-$CURRENT_DATE.html`
+    - '*/report-$CURRENT_DATE.html'
   base-directory: csp
