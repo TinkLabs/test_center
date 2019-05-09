@@ -28,7 +28,7 @@ const test = async () => {
 		await downloadCollections();
 		runTest();
 	}catch(e) {
-		console.log(e);
+		throw new Error(e);
 	}finally {
 		recordS3();
 	}
