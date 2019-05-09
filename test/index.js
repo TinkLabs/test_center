@@ -2,6 +2,7 @@ const {
     downloadCollections
 } = require('../service');
 const exec = require('child_process').execSync;
+let failedCount = 0;
 
 const runTest = ({collectionList, env, pipelineName}) => {
 	
@@ -13,14 +14,14 @@ const runTest = ({collectionList, env, pipelineName}) => {
 	            stdio: 'inherit',
 	            env: process.env
 	        });
-	        console.log('=====================', result);
     	}catch(e) {
-    		console.log(e);
+    		failedCount++;
     	}finally {
     		saveToS3(collectionName, pipelineName);
     	}
         
     }
+    console.log('==========', failedCount);
 };
 
 const saveToS3 = (collectionName, pipelineName) => {
