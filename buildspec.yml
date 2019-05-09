@@ -3,17 +3,18 @@ version: 0.2
 phases:
   pre_build:
     commands:
-    - npm install -g yarn
-    - yarn global add newman
-    - yarn global add newman-reporter-html
-    - yarn install
+      - export IMAGE_TAG=`date '+%Y%m%d%H%M%S'`
+      - npm install -g yarn
+      - yarn global add newman
+      - yarn global add newman-reporter-html
+      - yarn install
   build:
     commands:
       - echo Build started on `date`
       - node app.js
-      - newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report.html
+      - newman run files/collections/Profile.json -e files/environments/dev.json -r html --reporter-html-export report.html
   
 
-# artifacts:
-#   files:
-#     - report.html
+artifacts:
+  files:
+    - report.html
