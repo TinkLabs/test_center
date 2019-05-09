@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - export IMAGE_TAG=`date '+%Y%m%d%H%M%S'`
+      - export CURRENT_DATE=`date '+%Y%m%d%H%M%S'`
       - npm install -g yarn
       - yarn global add newman
       - yarn global add newman-reporter-html
@@ -12,9 +12,10 @@ phases:
     commands:
       - echo Build started on `date`
       - node app.js
-      - newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report.html
+      - newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report-$CURRENT_DATE.html
   
 
 artifacts:
   files:
-    - report.html
+    - `*/report-$CURRENT_DATE.html`
+  base-directory: csp
