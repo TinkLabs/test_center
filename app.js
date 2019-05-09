@@ -1,5 +1,5 @@
-const {runTest} = require('./test');
+const {test} = require('./test');
 
 // console.log(process.env);
 
-runTest();
+test();
