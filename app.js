@@ -1,3 +1,5 @@
-const {downloadCollections} = require('./service');
+const {runTest} = require('./test');
 
-downloadCollections();
+// console.log(process.env);
+
+runTest();

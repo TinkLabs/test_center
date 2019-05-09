@@ -11,11 +11,5 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - node app.js
-      - newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report-$CURRENT_DATE.html
+      - yarn test
   
-
-artifacts:
-  files:
-    - '*/report-$CURRENT_DATE.html'
-  base-directory: csp
