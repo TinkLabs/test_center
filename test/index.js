@@ -21,7 +21,9 @@ const runTest = ({collectionList, env, pipelineName}) => {
     	}
         
     }
-    console.log('==========', failedCount);
+    if(failedCount > 0) {
+    	process.exit(1);
+    }
 };
 
 const saveToS3 = (collectionName, pipelineName) => {
@@ -40,7 +42,7 @@ const test = async () => {
     const postmanConfig = await downloadCollections();
     if(!postmanConfig) {
     	console.log('download collection failed');
-    	exec('exit 1');
+    	process.exit(1);
     }
     runTest(postmanConfig);				
 };
