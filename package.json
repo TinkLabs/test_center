@@ -1,0 +1,10 @@
+{
+  "name": "apitest",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^7.0.1",
+    "superagent": "^5.0.5"
+  }
+}
