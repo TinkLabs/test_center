@@ -2,7 +2,7 @@ const path = require('path');
 const config = {
     mapping: {
         'MyTestPipeline': {
-            collectionList: ['TEST'],
+            collectionList: ['TEST', 'Profile'],
             env: 'dev'
         }
     },
