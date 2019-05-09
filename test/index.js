@@ -4,6 +4,7 @@ const {
 const exec = require('child_process').execSync;
 
 const runTest = ({collectionList, env, pipelineName}) => {
+	let failedCount = 0;
     for (let collectionName of collectionList) {
     	try{
     		let newmanCommand = `newman run files/collections/${collectionName}.json -e files/environments/${env}.json -r html,cli --reporter-html-export report-${collectionName}.html`;
@@ -13,11 +14,15 @@ const runTest = ({collectionList, env, pipelineName}) => {
 	            env: process.env
 	        });
     	}catch(e) {
+    		failedCount++;
     		throw e;
     	}finally {
     		saveToS3(collectionName, pipelineName);
     	}
         
+    }
+    if(failedCount > 0) {
+    	exec('exit 1');
     }
 };
 
