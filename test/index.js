@@ -1,36 +1,39 @@
-const {downloadCollections} = require('../service');
+const {
+    downloadCollections
+} = require('../service');
 const exec = require('child_process').execSync;
-
-const runTest = () => {
-	const newmanCommand = 'newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report.html';
-	exec(newmanCommand, {
-		cwd: process.cwd(),
-		stdio: 'inherit'
-	});
-	
+const runTest = ({
+    collectionList,
+    env,
+    pipelineName
+}) => {
+    for (let collectionName of collectionList) {
+    	try{
+    		let newmanCommand = `newman run files/collections/${collectionName}.json -e files/environments/${env}.json -r html,cli --reporter-html-export report-${collectionName}.html`;
+	        exec(newmanCommand, {
+	            cwd: process.cwd(),
+	            stdio: 'inherit'
+	        });
+    	}finally {
+    		saveToS3(collectionName, pipelineName);
+    	}
+        
+    }
 };
-
-const recordS3 = () => {
-	try {
-		const s3Command = `aws s3 cp ./report.html s3://postman-reports/reports/report-${process.env.CURRENT_DATE}.html`;
-		exec(s3Command, {
-			cwd: process.cwd(),
-			stdio: 'inherit'
-		});
-	}catch(e) {
-		console.log(e);
-	}
-	
+const saveToS3 = (collectionName, pipelineName) => {
+    try {
+        const s3Command = `aws s3 cp ./report-${collectionName}.html s3://postman-reports/reports/${pipelineName}/${process.env.CURRENT_DATE}/report-${collectionName}.html`;
+        exec(s3Command, {
+            cwd: process.cwd(),
+            stdio: 'inherit'
+        });
+    } catch (e) {
+        console.log(e);
+    }
 };
-
 const test = async () => {
-	try {
-		await downloadCollections();
-		runTest();
-	} finally {
-		recordS3();
-	}
-	
+    const postmanConfig = await downloadCollections();
+    runTest(postmanConfig);				
 };
 
 exports.test = test;
