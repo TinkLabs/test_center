@@ -14,6 +14,8 @@ const runTest = ({
 	            cwd: process.cwd(),
 	            stdio: 'inherit'
 	        });
+    	}catch(e) {
+    		console.log('-------run newman errror', e);
     	}finally {
     		saveToS3(collectionName, pipelineName);
     	}
