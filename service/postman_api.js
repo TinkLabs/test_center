@@ -69,9 +69,8 @@ const getLoginToken = async () => {
 
 const downloadCollections = async () => {
   try {
-    // await getCollections();
+    await getCollections();
     await getEnviroments();
-    // await getLoginToken();
   }catch(e) {
     console.log(e);
   }

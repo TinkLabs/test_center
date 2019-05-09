@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+    - npm install -g yarn
+    - yarn global add newman
+    - yarn install
+  build:
+    commands:
+      - echo Build started on `date`
+      - node app.js
+      - newman run files/collections/Profile.json -e files/environments/dev.json -r html,cli --reporter-html-export report.html
+  
+
+artifacts:
+  files:
+    - report.html
