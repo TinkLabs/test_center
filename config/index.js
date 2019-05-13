@@ -4,6 +4,10 @@ const config = {
         'MyTestPipeline': {
             collectionList: ['TEST', 'Profile'],
             env: 'dev'
+        },
+        "csp-build-uat": {
+            collectionList: ['SSO Service', 'mail', 'Profile'],
+            env: 'uat'
         }
     },
     "api_url": "https://api.getpostman.com/",

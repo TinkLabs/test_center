@@ -28,7 +28,7 @@ const runTest = ({collectionList, env, pipelineName}) => {
 
 const saveToS3 = (collectionName, pipelineName) => {
     try {
-        const s3Command = `aws s3 cp ./report-${collectionName}.html s3://postman-reports/reports/${pipelineName}/${process.env.CURRENT_DATE}/report-${collectionName}.html`;
+        const s3Command = `aws s3 cp ./report-${collectionName}.html s3://api-test.handy.travel/${pipelineName}/reports/${process.env.CURRENT_DATE}/report-${collectionName}.html`;
         exec(s3Command, {
             cwd: process.cwd(),
             stdio: 'inherit',
