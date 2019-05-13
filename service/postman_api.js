@@ -6,6 +6,8 @@ const PATHCOL = config.path.collections; //Postman collections folder
 const PATHENV = config.path.environments; //Postman environments folder
 const APIURL = config.api_url;
 
+const {getLoginToken} = require('./user_service');
+
 const getPipelineName = () => {
     let initiator = process.env.CODEBUILD_INITIATOR;
     if(!initiator) {
@@ -13,6 +15,7 @@ const getPipelineName = () => {
     }
     return initiator.substring(initiator.indexOf('/') + 1, initiator.length);
 };
+
 const getPostmanConfig = () => {
     const pipelineName = getPipelineName();
     const postmanConfig = config['mapping'][pipelineName];
@@ -24,11 +27,13 @@ const getPostmanConfig = () => {
       collectionList, env, pipelineName
     };
 };
+
 const download = (path, filename, json) => {
     console.log(`downloaded collection ${filename}`);
     fs.ensureDirSync(path);
     fs.writeFileSync(path + '/' + filename, json, 'utf8');
 };
+
 const getData = async (url) => {
     const result = await request.get(url).set('X-Api-Key', APIKEY);
     if (result.statusCode != 200) {
@@ -36,6 +41,7 @@ const getData = async (url) => {
     }
     return JSON.parse(result.text);
 };
+
 const getCollections = async ({collectionList}) => {
     const {collections} = await getData(`${APIURL}collections/`);
     for (let {uid,name} of collections) {
@@ -49,6 +55,7 @@ const getCollections = async ({collectionList}) => {
         download(PATHCOL, `${name}.json`, JSON.stringify(data));
     }
 };
+
 const getEnviroments = async ({env}) => {
     const {
         environments
@@ -58,29 +65,20 @@ const getEnviroments = async ({env}) => {
             name
         } of environments) {
         const data = await getData(`${APIURL}environments/${uid}`);
-        if (name === env) {
-            const usertoken = await getLoginToken();
-            data.environment.values.push({
-                "description": {
-                    "content": "",
-                    "type": "text/plain"
-                },
-                "value": usertoken,
-                "key": "usertoken",
-                "enabled": true
-            });
-            download(PATHENV, `${name}.json`, JSON.stringify(data));
-        }
+        const usertoken = await getLoginToken(data);
+        data.environment.values.push({
+            "description": {
+                "content": "",
+                "type": "text/plain"
+            },
+            "value": usertoken,
+            "key": "usertoken",
+            "enabled": true
+        });
+        download(PATHENV, `${name}.json`, JSON.stringify(data));
     }
 };
-const getLoginToken = async () => {
-    const result = await request.post(`https://csp-dev.handytravel.tech/auth/v1/user/login`).send({
-        email: 'henry.lau@hi.com',
-        password: 'Handy123',
-        appid: '123'
-    });
-    return JSON.parse(result.text).data;
-};
+
 const downloadCollections = async () => {
     try {
         const postmanConfig = getPostmanConfig();
@@ -97,4 +95,5 @@ const downloadCollections = async () => {
         console.log(e);
     }
 };
+
 exports.downloadCollections = downloadCollections;
