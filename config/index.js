@@ -6,7 +6,7 @@ const config = {
             env: 'dev'
         },
         "csp-build-uat": {
-            collectionList: ['SSO Service', 'mail', 'Profile'],
+            collectionList: ['SSO_Service', 'mail', 'Profile'],
             env: 'uat'
         }
     },
